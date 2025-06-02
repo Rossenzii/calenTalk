@@ -84,7 +84,7 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t nniinjjii/calentalk:latest
+          docker build -t nniinjjii/calentalk:latest .
 
       - name: PUSH to Docker Hub
         run: |
