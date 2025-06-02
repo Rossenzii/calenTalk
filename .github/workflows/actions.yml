@@ -27,6 +27,9 @@ jobs:
       - name: build with gradle
         run: ./gradlew clean build -x test
 
+      - name: List JARs
+        run: ls -al build/libs
+
       - name: Naming jar file
         run: mv build/libs/*.jar build/libs/calentalk.jar
 
