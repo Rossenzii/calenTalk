@@ -26,11 +26,18 @@ jobs:
 
       - name: build with gradle
         run: ./gradlew clean build -x test
+
+      - name: Naming jar file
+        run: mv build/libs/*.jar build/libs/calentalk.jar
+
+      - name: Check jar file
+        run: ls build/libs
+
         ## Artifact upload
       - name: Upload JAR as Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: calentalk-jar
+          name: calentalk
           path: build/libs/*.jar
 
 
@@ -45,12 +52,17 @@ jobs:
       - name: Download JAR Artifact
         uses: actions/download-artifact@v4
         with:
-          name: calentalk-jar
+          name: calentalk
 
       - name: Move jar to build/libs
         run: |
           mkdir -p build/libs
           mv *.jar build/libs/
+
+      - name: Check jar file
+        run: ls ./build/libs
+
+      ## Docker settings
 
       - name: Set up Docker
         uses: docker/setup-buildx-action@v2
@@ -61,26 +73,31 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Build Docker Image
         run: |
-          docker build -t $DOCKER_IMAGE:$IMAGE_TAG .
+          docker build -t nniinjjii/calentalk:latest
 
       - name: PUSH to Docker Hub
         run: |
-          docker push $DOCKER_IMAGE:$IMAGE_TAG
+          docker push nniinjjii/calentalk:latest
 
       - name: SSH Deploy to EC2
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
+          username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
-            cd ~/calenTalk
+            cd
             echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" > .env
             echo "MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}" >> .env
-            docker pull nniinjjii/calentalk:latest
-            docker stop calentalk || true
-            docker rm calentalk || true
-            docker run -d --name calentalk -p 8080:8080 nniinjjii/calentalk:latest
+            docker pull ${{ secrets.DOCKER_USERNAME }}/calentalk:latest
+            sudo docker-compose up -d
+            sudo docker image prune -a -f
 
