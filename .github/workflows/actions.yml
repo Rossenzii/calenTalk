@@ -76,6 +76,9 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
+            cd ~/calenTalk
+            echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" > .env
+            echo "MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}" >> .env
             docker pull nniinjjii/calentalk:latest
             docker stop calentalk || true
             docker rm calentalk || true
