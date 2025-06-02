@@ -9,6 +9,8 @@ env:
   IMAGE_TAG: latest
   MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
   MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+  REGISTRY_ALIAS: ${{ secrets.ECR_ID }}
+  REPOSITORY: calentalk
 
 jobs:
   ci:
@@ -26,9 +28,6 @@ jobs:
 
       - name: build with gradle
         run: ./gradlew clean build -x test
-
-      - name: List JARs
-        run: ls -al build/libs
 
       - name: Rename jar file
         run: mv build/libs/calenTalk-0.0.1-SNAPSHOT.jar build/libs/calentalk.jar
@@ -62,43 +61,25 @@ jobs:
           mkdir -p build/libs
           mv *.jar build/libs/
 
-      - name: Check jar file
-        run: ls ./build/libs
-
-      ## Docker settings
-
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v2
-
-      - name: Docker Hub Login
-        uses: docker/login-action@v3
+      ## ECR settings
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build Docker Image
-        run: |
-          docker build -t nniinjjii/calentalk:latest .
-
-      - name: PUSH to Docker Hub
-        run: |
-          docker push nniinjjii/calentalk:latest
-
-
-      - name: Copy docker-compose.yml to EC2
-        uses: appleboy/scp-action@v0.1.4
+      - name: Login to Amazon ECR Public
+        id: login-ecr-public
+        uses: aws-actions/amazon-ecr-login@v2
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
-          source: "docker-compose.yml"
-          target: "/home/ubuntu/"
+          registry-type: public
+
+      - name: Build, tag, and push docker image to Amazon ECR Public
+        run: |
+          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/${{ secrets.ECR_ID }}
+          docker build -t ${REGISTRY}/${REGISTRY_ALIAS}/calentalk:${IMAGE_TAG} .
+          docker push ${REGISTRY}/${REGISTRY_ALIAS}/calentalk:${IMAGE_TAG}
 
       - name: SSH Deploy to EC2
         uses: appleboy/ssh-action@v1.0.0
@@ -107,11 +88,9 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
-            cd ~/calenTalk
-            echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" > .env
-            echo "MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}" >> .env
-            docker pull ${{ secrets.DOCKER_USERNAME }}/calentalk:latest
-            sudo docker-compose down
-            sudo docker compose up -d
-            sudo docker image prune -a -f
-
+            aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/${{ secrets.ECR_ID }}
+            docker pull public.ecr.aws/${{ secrets.ECR_ID }}/calentalk:latest
+            docker stop calentalk-container || true
+            docker rm calentalk-container || true
+            docker run -d --name calentalk-container -p 8080:8080 public.ecr.aws/${{ secrets.ECR_ID }}/calentalk:latest
+       
