@@ -90,6 +90,16 @@ jobs:
         run: |
           docker push nniinjjii/calentalk:latest
 
+
+      - name: Copy docker-compose.yml to EC2
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          source: "docker-compose.yml"
+          target: "/home/ubuntu/"
+
       - name: SSH Deploy to EC2
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -97,10 +107,11 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
-            cd
+            cd ~/calenTalk
             echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" > .env
             echo "MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}" >> .env
             docker pull ${{ secrets.DOCKER_USERNAME }}/calentalk:latest
-            sudo docker-compose up -d
-            sudo docker image prune -a -f
+            docker-compose down
+            docker-compose up -d
+            docker image prune -a -f
 
