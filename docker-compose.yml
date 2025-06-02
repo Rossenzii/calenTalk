@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  calentalk-mysql-container:
+    image: mysql:8.0
+    container_name: calentalk-mysql-container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      TZ: Asia/Seoul
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./dbinit:/docker-entrypoint-initdb.d
+    networks:
+      - calentalk-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+
+
+  calentalk-spring-container:
+    image: nniinjjii/calentalk:latest
+    container_name: calentalk-spring-container
+    depends_on:
+      calentalk-mysql-container:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    networks:
+      - calentalk-network
+
+volumes:
+  mysql-data:
+
+networks:
+  calentalk-network:
