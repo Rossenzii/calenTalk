@@ -77,5 +77,5 @@ jobs:
             docker pull nniinjjii/calentalk:latest
             docker stop calentalk || true
             docker rm calentalk || true
-            docker run -d --name calentalk -p 8080:8080 $DOCKER_IMAGE:$IMAGE_TAG
+            docker run -d --name calentalk -p 8080:8080 nniinjjii/calentalk:latest
 
