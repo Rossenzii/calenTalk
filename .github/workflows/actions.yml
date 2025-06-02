@@ -76,10 +76,12 @@ jobs:
           registry-type: public
 
       - name: Build, tag, and push docker image to Amazon ECR Public
+        env:
+          REGISTRY=${{ steps.login-ecr-public.outputs.registry }}
         run: |
-          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/${{ secrets.ECR_ID }}
-          docker build -t ${REGISTRY}/${REGISTRY_ALIAS}/calentalk:${IMAGE_TAG} .
-          docker push ${REGISTRY}/${REGISTRY_ALIAS}/calentalk:${IMAGE_TAG}
+          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/${REGISTRY_ALIAS}
+          docker build -t $REGISTRY/${REGISTRY_ALIAS}/calentalk:${IMAGE_TAG} .
+          docker push $REGISTRY/${REGISTRY_ALIAS}/calentalk:${IMAGE_TAG}
 
       - name: SSH Deploy to EC2
         uses: appleboy/ssh-action@v1.0.0
@@ -88,9 +90,9 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
-            aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/${{ secrets.ECR_ID }}
-            docker pull public.ecr.aws/${{ secrets.ECR_ID }}/calentalk:latest
+            aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/${REGISTRY_ALIAS}
+            docker pull public.ecr.aws/${REGISTRY_ALIAS}/calentalk:latest
             docker stop calentalk-container || true
             docker rm calentalk-container || true
-            docker run -d --name calentalk-container -p 8080:8080 public.ecr.aws/${{ secrets.ECR_ID }}/calentalk:latest
+            docker run -d --name calentalk-container -p 8080:8080 public.ecr.aws/${REGISTRY_ALIAS}/calentalk:latest
        
