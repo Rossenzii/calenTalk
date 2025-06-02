@@ -34,6 +34,9 @@ services:
       - "8080:8080"
     networks:
       - calentalk-network
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
 
 volumes:
   mysql-data:
