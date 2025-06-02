@@ -30,8 +30,8 @@ jobs:
       - name: List JARs
         run: ls -al build/libs
 
-      - name: Naming jar file
-        run: mv build/libs/*.jar build/libs/calentalk.jar
+      - name: Rename jar file
+        run: mv build/libs/calenTalk-0.0.1-SNAPSHOT.jar build/libs/calentalk.jar
 
       - name: Check jar file
         run: ls build/libs
