@@ -40,3 +40,4 @@ volumes:
 
 networks:
   calentalk-network:
+    driver: bridge

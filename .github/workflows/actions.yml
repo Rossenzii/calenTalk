@@ -7,6 +7,8 @@ on:
 env:
   DOCKER_IMAGE: nniinjjii/calentalk
   IMAGE_TAG: latest
+  MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
+  MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
 
 jobs:
   ci:
