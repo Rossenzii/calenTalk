@@ -74,7 +74,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
-            docker pull $DOCKER_IMAGE:$IMAGE_TAG
+            docker pull nniinjjii/calentalk:latest
             docker stop calentalk || true
             docker rm calentalk || true
             docker run -d --name calentalk -p 8080:8080 $DOCKER_IMAGE:$IMAGE_TAG
