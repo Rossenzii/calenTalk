@@ -101,9 +101,12 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
             ECR_ID=${{ secrets.ECR_ID }}
+            cd /home/ubuntu
+            echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" > .env
+            echo "MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}" >> .env
+            
             aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/$ECR_ID
             sudo docker pull public.ecr.aws/$ECR_ID/calentalk:latest
             
-            cd /home/${{ secrets.EC2_USERNAME }}
             sudo docker compose down || true
             sudo docker compose up -d
