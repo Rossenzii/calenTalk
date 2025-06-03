@@ -1,8 +1,7 @@
 package mj.calenTalk.users.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -10,6 +9,9 @@ import java.time.LocalDateTime;
 @Table(name="users")
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Users {
 
     @Id
@@ -17,9 +19,8 @@ public class Users {
     @Column(name="users_id")
     private Long id;
 
-    private String userId;
-    private String nickname;
-    private String password;
+    private String googleId;
+    private String name;
     private String email;
     private LocalDateTime createdAt;
 
