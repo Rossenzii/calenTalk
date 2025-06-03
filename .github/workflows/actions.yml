@@ -1,4 +1,4 @@
-name: Full CI/CD Pipeline
+name: CI/CD with public ECR Pipeline
 
 on:
   push:
