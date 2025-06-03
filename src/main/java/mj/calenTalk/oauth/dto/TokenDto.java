@@ -1,4 +1,4 @@
-package mj.calenTalk.oauth.dto.response;
+package mj.calenTalk.oauth.dto;
 
 import jakarta.annotation.Nullable;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class GoogleToken {
+public class TokenDto {
     String access_token;
     @Nullable
     String refresh_token;

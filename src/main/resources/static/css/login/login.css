@@ -1,0 +1,45 @@
+body {
+  background-color: #e7f5e1;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  text-align: center;
+}
+
+.logo {
+  width: 250px;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: 1.8rem;
+  margin-bottom: 30px;
+  color: #2e7d32;
+}
+
+#google-login-btn {
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#google-login-btn:hover {
+  background-color: #1b5e20;
+}
+
+p {
+  font-size: 1.2rem;
+  color: #4a4a4a;
+}

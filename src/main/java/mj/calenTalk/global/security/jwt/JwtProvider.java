@@ -1,0 +1,80 @@
+package mj.calenTalk.global.security.jwt;
+
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.Claims;
+import lombok.RequiredArgsConstructor;
+import mj.calenTalk.global.exception.ApplicationException;
+import mj.calenTalk.global.exception.ErrorCode;
+import mj.calenTalk.global.security.PrincipalDetails;
+import mj.calenTalk.users.entity.Users;
+import mj.calenTalk.users.repository.UsersRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
+
+import java.security.Key;
+import java.util.Date;
+
+@Component
+@RequiredArgsConstructor
+public class JwtProvider {
+    @Value("${JWT_SECRET}")
+    private String secretKey;
+    private Key key;
+    private final UsersRepository usersRepository;
+
+    private static final long accessTokenExpTime = 7 * 24 * 60 * 60 * 1000L; //1주
+    private static final long refreshTokenExpTime = 30 * 24 * 60 * 60 * 1000L; //1달
+
+    /**
+     * user email로 토큰 생성
+     * @param users
+     * @return jwt token
+     */
+    public String generateToken(Users users){
+        Claims claims = Jwts.claims().setSubject(users.getEmail());;
+        Date now = new Date();
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + accessTokenExpTime))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    /**
+     * 토큰 유효성 검증
+     * @param token
+     * @return t/f
+     */
+    public boolean validateToken(String token){
+        try {
+            Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            return claims.getBody().getExpiration().after(new Date());
+        } catch (Exception e) {
+            throw new ApplicationException(ErrorCode.INVALID_JWT_EXCEPTION);
+        }
+    }
+
+    /**
+     * UserDetailsService 없이 db 조회
+     * @param token
+     * @return Authentication 객체로 반환
+     */
+    public Authentication getAuthentication(String token){
+        String email = getEmail(token);
+        Users users = usersRepository.findByEmail(email).orElseThrow(() -> new ApplicationException(ErrorCode.NOT_FOUND_EXCEPTION));
+        PrincipalDetails principalDetails = new PrincipalDetails(users);
+        return new UsernamePasswordAuthenticationToken(principalDetails, "", principalDetails.getAuthorities());
+    }
+    public String getEmail(String token) {
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
+    }
+
+
+
+
+}

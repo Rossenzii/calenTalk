@@ -16,11 +16,12 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/html/**", "/js/**", "/css/**").permitAll() // 정적 리소스 허용
-                                .requestMatchers("/api/v1/oauth/**").permitAll()
+                .requestMatchers("/html/login/**","/html/chat/**", "/js/login/**","/js/chat/**",
+                        "/css/login/**","/css/chat/**", "/image/**","/api/v1/oauth/**").permitAll() // 정적 리소스 허용
                 .anyRequest().authenticated()
                 )
-                .formLogin(Customizer.withDefaults());
+                .formLogin(form -> form.defaultSuccessUrl("/html/chat/chat.html",true)
+                .permitAll());
 
         return http.build();
     }

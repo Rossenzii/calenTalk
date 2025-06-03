@@ -8,7 +8,9 @@ public enum ErrorCode {
 
     // 401: Auth Error
     INVALID_JWT_EXCEPTION(HttpStatus.UNAUTHORIZED, 401, "유효하지 않은 토큰입니다"),
-    USER_INFO_FAIL(HttpStatus.BAD_REQUEST,402, "사용자 정보 요청 실패");
+    USER_INFO_FAIL(HttpStatus.BAD_REQUEST,402, "사용자 정보 요청 실패"),
+    NOT_FOUND_EXCEPTION(HttpStatus.NOT_FOUND,403,"사용자가 존재하지 않습니다");
+
 
     private final HttpStatus httpStatus;
     private final Integer code;
