@@ -82,6 +82,12 @@ jobs:
           docker build -t $REGISTRY/${REGISTRY_ALIAS}/calentalk:${IMAGE_TAG} .
           docker push $REGISTRY/${REGISTRY_ALIAS}/calentalk:${IMAGE_TAG}
 
+      - name: Copy docker-compose and dbinit to EC2
+        run: |
+          scp -o StrictHostKeyChecking=no -r \
+            docker-compose.yml dbinit \
+            ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USERNAME }}
+
       - name: SSH Deploy to EC2
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -92,6 +98,7 @@ jobs:
             ECR_ID=${{ secrets.ECR_ID }}
             aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/$ECR_ID
             sudo docker pull public.ecr.aws/$ECR_ID/calentalk:latest
-            sudo docker stop calentalk-container || true
-            sudo docker rm calentalk-container || true
-            sudo docker run -d --name calentalk-container -p 8080:8080 public.ecr.aws/$ECR_ID/calentalk:latest
+            
+            cd /home/${{ secrets.EC2_USERNAME }}
+            sudo docker compose down || true
+            sudo docker compose up -d
