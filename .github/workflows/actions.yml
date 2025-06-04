@@ -5,12 +5,9 @@ on:
     branches: [ "main" ]
 
 env:
-  DOCKER_IMAGE: nniinjjii/calentalk
   IMAGE_TAG: latest
   MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
   MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
-  REGISTRY_ALIAS: ${{ secrets.ECR_ID }}
-  REPOSITORY: calentalk
 
 jobs:
   ci:
@@ -48,7 +45,7 @@ jobs:
     needs: ci
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v3
 
       - name: Download JAR Artifact
@@ -67,20 +64,19 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          aws-region: ap-northeast-2
 
-      - name: Login to Amazon ECR Public
-        id: login-ecr-public
-        uses: aws-actions/amazon-ecr-login@v2
-        with:
-          registry-type: public
+      - name: Login to Amazon ECR private
+        id: login-ecr-private
+        run: |
+          aws ecr get-login-password --region ap-northeast-2 | \
+          docker login --username AWS --password-stdin ${{ secrets.ECR_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com
+
 
       - name: Build, tag, and push docker image to Amazon ECR Public
         run: |
-          export REGISTRY=${{ steps.login-ecr-public.outputs.registry }}
-          aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/${REGISTRY_ALIAS}
-          docker build -t $REGISTRY/${REGISTRY_ALIAS}/calentalk:${IMAGE_TAG} .
-          docker push $REGISTRY/${REGISTRY_ALIAS}/calentalk:${IMAGE_TAG}
+          docker build -t ${{ secrets.ECR_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/${{ secrets.ECR_PRIVATE_REPOSITORY }}:latest .
+          docker push ${{ secrets.ECR_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/${{ secrets.ECR_PRIVATE_REPOSITORY }}:latest
 
       - name: Setup SSH agent
         uses: webfactory/ssh-agent@v0.5.4
@@ -105,7 +101,6 @@ jobs:
             echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" > .env
             echo "MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}" >> .env
             
-            aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/$ECR_ID
             sudo docker pull public.ecr.aws/$ECR_ID/calentalk:latest
             
             sudo docker compose down || true
