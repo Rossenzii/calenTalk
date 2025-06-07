@@ -30,6 +30,8 @@ dependencies {
 	implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:3.0.1")
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'mysql:mysql-connector-java:8.0.33'
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'org.springframework.boot:spring-boot-devtools'
 	implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3'
 	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.689'
 	implementation 'org.springframework.boot:spring-boot-starter-security'

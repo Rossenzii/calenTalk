@@ -38,6 +38,15 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
 
+  calentalk-redis-container:
+    image: redis
+    container_name: calentalk-redis-container
+    ports:
+      - 6379:6379
+    volumes:
+      - redis.conf:/etc/redis/redis.conf
+    command: redis-server redis.conf
+
 volumes:
   mysql-data:
 
