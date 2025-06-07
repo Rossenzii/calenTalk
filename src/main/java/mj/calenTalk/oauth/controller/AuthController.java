@@ -26,7 +26,8 @@ public class AuthController {
         UserInfoDto userInfo = authService.getUserInfo(dto.getAccess_token());
         Users users = userService.saveOrUpdateUser(userInfo);
 
-        jwtProvider.generateToken(users); //jwt
+        jwtProvider.generateAccessToken(users);
+        jwtProvider.generateRefreshToken(users);
         return ResponseEntity.ok(userInfo);
 
     }

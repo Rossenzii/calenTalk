@@ -4,6 +4,9 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import mj.calenTalk.global.exception.ApplicationException;
 import mj.calenTalk.global.exception.ErrorCode;
@@ -25,22 +28,37 @@ public class JwtProvider {
     private String secretKey;
     private Key key;
     private final UsersRepository usersRepository;
-
     private static final long accessTokenExpTime = 7 * 24 * 60 * 60 * 1000L; //1주
     private static final long refreshTokenExpTime = 30 * 24 * 60 * 60 * 1000L; //1달
+
+    @PostConstruct
+    public void init() {
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        this.key = Keys.hmacShaKeyFor(keyBytes);
+    }
 
     /**
      * user email로 토큰 생성
      * @param users
      * @return jwt token
      */
-    public String generateToken(Users users){
+    public String generateAccessToken(Users users){
         Claims claims = Jwts.claims().setSubject(users.getEmail());;
         Date now = new Date();
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + accessTokenExpTime))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+    public String generateRefreshToken(Users users){
+        Claims claims = Jwts.claims().setSubject(users.getEmail());;
+        Date now = new Date();
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + refreshTokenExpTime))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -62,7 +80,7 @@ public class JwtProvider {
     /**
      * UserDetailsService 없이 db 조회
      * @param token
-     * @return Authentication 객체로 반환
+     * @return Authentication 객체(SecurityContextHolder 보관 역할)
      */
     public Authentication getAuthentication(String token){
         String email = getEmail(token);

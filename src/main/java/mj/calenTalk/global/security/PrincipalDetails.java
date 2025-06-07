@@ -13,7 +13,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PrincipalDetails implements UserDetails {
     private final Users users;
-    //권한 정보
+
+    /**
+     * 권한 정보
+     * @return 인증된 사용자 정보
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities(){
         Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
@@ -21,13 +25,11 @@ public class PrincipalDetails implements UserDetails {
         return authorities;
     }
 
-    // 사용자의 비밀번호 반환
     @Override
     public String getPassword() {
         return users.getPassword();
     }
 
-    // 사용자의 이름 반환
     @Override
     public String getUsername() {
         return users.getName();

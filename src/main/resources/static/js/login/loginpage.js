@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const button = document.getElementById("google-login-btn");
   const GOOGLE_CLIENT_ID = "179393727431-qppqju1suj1l62dvprccfs18mhnds1sk.apps.googleusercontent.com";
-  const REDIRECT_URI = "http://localhost:8081/html/redirect.html";
+  const REDIRECT_URI = "http://localhost:8081/html/login/redirect.html";
   const SCOPE = "email profile";
 
   button.addEventListener("click", () => {
