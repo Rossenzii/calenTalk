@@ -2,9 +2,13 @@ package mj.calenTalk.oauth.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import mj.calenTalk.global.security.jwt.JwtProvider;
 import mj.calenTalk.oauth.dto.TokenDto;
 import mj.calenTalk.oauth.dto.UserInfoDto;
+import mj.calenTalk.users.entity.Users;
+import mj.calenTalk.util.redis.RedisClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -13,15 +17,22 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class GoogleOAuthClient {
     @Value("${GOOGLE_CLIENT_ID}")
     private String clientId;
     @Value("${GOOGLE_CLIENT_SECRET}")
     private String clientSecret;
     @Value("${REDIRECT_URI}")
     private String redirectUri;
+
+    private final JwtProvider jwtProvider;
+    private final RedisClient redisClient;
 
     public TokenDto getAccessToken(String code){
         String tokenUrl = "https://oauth2.googleapis.com/token";
@@ -74,6 +85,28 @@ public class AuthService {
         }
         return googleUserInfo;
 
+    }
+    /**
+     * cookie 저장, redis 저장
+     * @param users
+     * @param response
+     */
+    public Map<String, String> signIn(Users users, HttpServletResponse response){
+        String refreshToken = jwtProvider.generateRefreshToken(users);
+        String accessToken = jwtProvider.generateAccessToken(users);
+
+        redisClient.setValue(users.getEmail(), refreshToken, 30 * 24 * 60 * 60 * 1000L); //30days
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(Duration.ofDays(7))
+                .build();
+        response.addHeader("Set-Cookie", cookie.toString());
+
+        Map<String, String> tokenResponse = new HashMap<>();
+        tokenResponse.put("accessToken", accessToken);
+        return tokenResponse;
     }
 }
 

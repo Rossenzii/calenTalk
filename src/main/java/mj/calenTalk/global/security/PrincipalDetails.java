@@ -34,5 +34,8 @@ public class PrincipalDetails implements UserDetails {
     public String getUsername() {
         return users.getName();
     }
+    public String getEmail() {
+        return users.getEmail();
+    }
 
 }

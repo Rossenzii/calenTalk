@@ -7,4 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ApplicationException extends RuntimeException {
     public ErrorCode errorCode;
+    @Override
+    public String getMessage() {
+        return errorCode.getMessage();
+    }
 }

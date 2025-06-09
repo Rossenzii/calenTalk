@@ -20,12 +20,12 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/chat")
+@RequestMapping("/api/v1")
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
 
-    @PostMapping("/room")
+    @PostMapping("/chatroom")
     public ResponseEntity<ChatRoom> createChatRoom(@RequestBody CreateRoomRequest request) {
         ChatRoom room = chatRoomService.createRoom(request);
         return ResponseEntity.ok(room);

@@ -10,9 +10,7 @@
 <div class="sidebar">
     <div class="logo">calenTalk</div>
     <ul class="user-list" id="userList">
-        <li class="user-item">사용자 1</li>
-        <li class="user-item">사용자 2</li>
-        <li class="user-item">사용자 3</li>
+        <!-- 사용자 목록이 JS로 채워짐 -->
     </ul>
 </div>
 
@@ -25,6 +23,8 @@
     </div>
 </div>
 
-<script src="/js/chat/chat.js"></script>
+<!-- 스크립트 분리 로드 -->
+<script src="/js/chat/messageHandler.js"></script>
+<script src="/js/chat/userList.js"></script>
 </body>
 </html>

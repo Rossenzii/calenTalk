@@ -23,6 +23,9 @@ public class Users {
     private String googleId;
     private String name;
     private String email;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_type", nullable = false, length = 50)
     private UsersType userType;
     private LocalDateTime createdAt;
 
