@@ -28,9 +28,6 @@ public class ChatRoomController {
     private final ChatRoomService chatRoomService;
     @PostMapping("/chatroom")
     public ResponseEntity<ChatRoomResponse> createChatRoom(@RequestBody CreateRoomRequest request) {
-        log.info("✅ [Controller] createChatRoom 호출됨");
-        log.info("➡️ fromUserId: {}, toUserId: {}", request.getFromUserId(), request.getToUserId());
-
         ChatRoomResponse roomResponse = chatRoomService.createRoom(request);
         return ResponseEntity.ok(roomResponse);
     }

@@ -1,6 +1,7 @@
 package mj.calenTalk.chat.repository;
 
 import mj.calenTalk.chat.entity.ChatRoom;
+import mj.calenTalk.chat.entity.ChatRoomTalker;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -9,13 +10,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
-    @Query("""
-    SELECT r FROM ChatRoom r
-    JOIN r.talkers t1
-    JOIN r.talkers t2
-    WHERE t1.user.id = :user1Id AND t2.user.id = :user2Id
-    """)
-    Optional<ChatRoom> findByUserIds(@Param("user1Id") Long user1Id, @Param("user2Id") Long user2Id);
+public interface ChatRoomTalkerRepository extends JpaRepository<ChatRoomTalker, Long> {
 
 }

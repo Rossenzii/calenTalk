@@ -6,13 +6,15 @@ function sendMessage() {
   const input = document.getElementById('chatInput');
   const message = input.value.trim();
   if (message === '') return;
+  const sender = localStorage.getItem("senderName");
+  const roomId = localStorage.getItem("currentRoomId");
+
+  // 서버로 전송
+  sendMessageToServer(roomId, sender, message);
 
   const msgDiv = document.createElement('div');
   msgDiv.textContent = message;
-  msgDiv.style.marginBottom = '10px';
-  msgDiv.style.padding = '10px';
-  msgDiv.style.backgroundColor = '#dcedc8';
-  msgDiv.style.borderRadius = '8px';
+  msgDiv.classList.add('chat-message');
 
   document.getElementById('chatMessages').appendChild(msgDiv);
   input.value = '';
