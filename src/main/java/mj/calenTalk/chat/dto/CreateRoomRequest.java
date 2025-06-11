@@ -1,9 +1,9 @@
 package mj.calenTalk.chat.dto;
-
 import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class CreateRoomRequest {
-    private String name;
-    private Long userId;
+    private Long fromUserId;
+    private Long toUserId;
 }

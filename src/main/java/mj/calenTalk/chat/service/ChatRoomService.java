@@ -3,6 +3,7 @@ package mj.calenTalk.chat.service;
 import lombok.RequiredArgsConstructor;
 import mj.calenTalk.chat.dto.CreateRoomRequest;
 import mj.calenTalk.chat.entity.ChatRoom;
+import mj.calenTalk.chat.entity.ChatRoomTalker;
 import mj.calenTalk.chat.repository.ChatRoomRepository;
 import mj.calenTalk.global.exception.ApplicationException;
 import mj.calenTalk.global.exception.ErrorCode;
@@ -19,14 +20,27 @@ public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
 
     public ChatRoom createRoom(CreateRoomRequest request) {
-        Users user = usersRepository.findById(request.getUserId())
+        Users fromUser = usersRepository.findById(request.getFromUserId())
                 .orElseThrow(() -> new ApplicationException(ErrorCode.NOT_FOUND_EXCEPTION));
-        ChatRoom room = ChatRoom.builder()
+        Users toUser = usersRepository.findById(request.getToUserId())
+                .orElseThrow(() -> new ApplicationException(ErrorCode.NOT_FOUND_EXCEPTION));
+        ChatRoom chatRoom = ChatRoom.builder()
                 .roomId(UUID.randomUUID().toString())
-                .name(request.getName())
-                .users(user)
+                .build();
+        ChatRoomTalker talker1 = ChatRoomTalker.builder()
+                .user(fromUser)
+                .chatRoom(chatRoom)
                 .build();
 
-        return chatRoomRepository.save(room);
+        ChatRoomTalker talker2 = ChatRoomTalker.builder()
+                .user(toUser)
+                .chatRoom(chatRoom)
+                .build();
+
+        chatRoom.getTalkers().add(talker1);
+        chatRoom.getTalkers().add(talker2);
+
+        return chatRoomRepository.save(chatRoom);
     }
+
 }

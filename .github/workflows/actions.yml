@@ -87,7 +87,7 @@ jobs:
       - name: Copy files to EC2
         run: |
           scp -o StrictHostKeyChecking=no -r \
-            docker-compose.yml dbinit \
+            docker-compose.yml dbinit redis \
             ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USERNAME }}
 
       - name: SSH Deploy to EC2
