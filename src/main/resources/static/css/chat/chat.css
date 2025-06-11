@@ -93,9 +93,33 @@ body {
 .chat-input button:hover {
   background-color: #43a047;
 }
-.chat-message {
-  margin-bottom: 10px;
+
+#chatMessages {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
   padding: 10px;
+}
+
+.message-wrapper {
+  display: flex;
+  width: 100%;
+}
+
+.my-message {
+  background-color: #81c784;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 20px;
+  max-width: 60%;
+  word-break: break-word;
+}
+
+.other-message {
   background-color: #dcedc8;
-  border-radius: 8px;
+  color: black;
+  padding: 10px 15px;
+  border-radius: 20px;
+  max-width: 60%;
+  word-break: break-word;
 }

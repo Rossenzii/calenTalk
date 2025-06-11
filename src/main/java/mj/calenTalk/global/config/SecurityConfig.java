@@ -37,7 +37,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/favicon.ico",
                                 "/html/**", "/js/**", "/css/**", "/image/**",
-                                "/api/v1/oauth/**"
+                                "/api/v1/oauth/**", "/stomp/**", "/stomp","/ws/**"
                         ).permitAll()
                         .requestMatchers("/api/v1/userlist","/api/v1/chatroom").hasRole("GENERAL")
                         .anyRequest().authenticated()
