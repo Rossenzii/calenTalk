@@ -82,8 +82,6 @@ public class JwtProvider {
             throw new ApplicationException(ErrorCode.INVALID_JWT_EXCEPTION);
         }
     }
-
-
     /**
      * UserDetailsService 없이 db 조회
      * @param token
@@ -91,10 +89,9 @@ public class JwtProvider {
      */
     public Authentication getAuthentication(String token){
         String email = getEmail(token);
-        System.out.println("추출한 email"+email);
         Users users = usersRepository.findByEmail(email).orElseThrow(() -> new ApplicationException(ErrorCode.NOT_FOUND_EXCEPTION));
         PrincipalDetails principalDetails = new PrincipalDetails(users);
-        return new UsernamePasswordAuthenticationToken(principalDetails, "", principalDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
     }
     public String getEmail(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();

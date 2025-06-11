@@ -44,8 +44,11 @@ services:
     ports:
       - 6379:6379
     volumes:
-      - redis.conf:/etc/redis/redis.conf
-    command: redis-server redis.conf
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+      - ./redis/data:/data
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    networks:
+      - calentalk-network
 
 volumes:
   mysql-data:

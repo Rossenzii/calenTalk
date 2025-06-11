@@ -24,7 +24,6 @@ import java.util.UUID;
 public class ChatRoomController {
 
     private final ChatRoomService chatRoomService;
-
     @PostMapping("/chatroom")
     public ResponseEntity<ChatRoom> createChatRoom(@RequestBody CreateRoomRequest request) {
         ChatRoom room = chatRoomService.createRoom(request);

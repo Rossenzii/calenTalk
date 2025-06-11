@@ -1,8 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
   const accessToken = localStorage.getItem("accessToken");
+  if (!accessToken) {
+    console.error(" accessToken 없음! 로그인 먼저 하세요");
+    alert("로그인이 필요합니다.");
+    return;
+  }
   console.log("accessToken:", accessToken);
 
-  fetch("http://localhost:8081/api/v1/users", {
+  fetch("http://localhost:8081/api/v1/userlist", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

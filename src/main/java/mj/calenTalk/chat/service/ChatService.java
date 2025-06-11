@@ -12,7 +12,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ChatService {
-
     private final RedisTemplate<String, String> redisTemplate;
 
     public void saveMessage(ChatMessage message) {
@@ -21,8 +20,8 @@ public class ChatService {
         redisTemplate.opsForList().rightPush(key, message.getMessage());
     }
 
-    public List<String> getRecentMessages(String roomId, int count) {
+    public List<String> getMessages(String roomId) {
         String key = "chat:room:" + roomId;
-        return redisTemplate.opsForList().range(key, -count, -1);
+        return redisTemplate.opsForList().range(key, 0, -1);
     }
 }

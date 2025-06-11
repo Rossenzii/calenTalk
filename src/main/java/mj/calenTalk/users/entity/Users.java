@@ -2,9 +2,12 @@ package mj.calenTalk.users.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import mj.calenTalk.chat.entity.ChatRoomTalker;
 import mj.calenTalk.users.enumerate.UsersType;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="users")
@@ -28,6 +31,9 @@ public class Users {
     @Column(name = "user_type", nullable = false, length = 50)
     private UsersType userType;
     private LocalDateTime createdAt;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ChatRoomTalker> chatRooms = new ArrayList<>();
 
 
 }
