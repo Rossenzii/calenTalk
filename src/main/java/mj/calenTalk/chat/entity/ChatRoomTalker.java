@@ -1,5 +1,6 @@
 package mj.calenTalk.chat.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import mj.calenTalk.users.entity.Users;
@@ -18,6 +19,7 @@ public class ChatRoomTalker{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chatroom_id")
+    @JsonIgnore
     private ChatRoom chatRoom;
 
     @ManyToOne(fetch = FetchType.LAZY)

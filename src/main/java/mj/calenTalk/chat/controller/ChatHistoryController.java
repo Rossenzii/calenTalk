@@ -1,6 +1,7 @@
 package mj.calenTalk.chat.controller;
 
 import lombok.RequiredArgsConstructor;
+import mj.calenTalk.chat.dto.ChatMessage;
 import mj.calenTalk.chat.service.ChatService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +19,8 @@ public class ChatHistoryController {
     private final ChatService chatService;
 
     @GetMapping("/chatroom/{roomId}/messages")
-    public ResponseEntity<List<String>> getMessages(@PathVariable String roomId) {
-        List<String> messages = chatService.getMessages(roomId);
+    public ResponseEntity<List<ChatMessage>> getMessages(@PathVariable String roomId) {
+        List<ChatMessage> messages = chatService.getMessages(roomId);
         return ResponseEntity.ok(messages);
     }
 }

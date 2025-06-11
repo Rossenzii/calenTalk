@@ -7,8 +7,11 @@ import mj.calenTalk.users.entity.Users;
 @Getter
 @AllArgsConstructor
 public class UserDto {
-    public String name;
+    private Long id;
+    private String name;
+
     public static UserDto fromEntity(Users user) {
-        return new UserDto(user.getName());
+        return new UserDto(user.getId(), user.getName());
     }
 }
+

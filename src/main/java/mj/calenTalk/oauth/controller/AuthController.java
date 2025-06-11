@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import mj.calenTalk.global.security.PrincipalDetails;
 import mj.calenTalk.global.security.jwt.JwtProvider;
+import mj.calenTalk.oauth.dto.LoginResponse;
 import mj.calenTalk.oauth.dto.TokenDto;
 import mj.calenTalk.oauth.dto.UserInfoDto;
 import mj.calenTalk.oauth.service.GoogleOAuthClient;
@@ -22,7 +23,6 @@ import java.util.Map;
 public class AuthController {
     private final GoogleOAuthClient googleOAuthClient;
     private final UsersService userService;
-    private final JwtProvider jwtProvider;
     @PostMapping("/google")
     public ResponseEntity<?> userLogin(@RequestBody Map<String, String> body, HttpServletResponse response) {
         String code = body.get("code");
@@ -31,7 +31,8 @@ public class AuthController {
         Users users = userService.saveOrUpdateUser(userInfo);
 
         Map<String, String> tokenMap = googleOAuthClient.signIn(users, response);
-        return ResponseEntity.ok(tokenMap);
+        return ResponseEntity.ok(LoginResponse.from(tokenMap, users));
+
     }
 
 //    @GetMapping("/reissue")

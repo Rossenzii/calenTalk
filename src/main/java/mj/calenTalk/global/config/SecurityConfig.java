@@ -39,7 +39,7 @@ public class SecurityConfig {
                                 "/html/**", "/js/**", "/css/**", "/image/**",
                                 "/api/v1/oauth/**"
                         ).permitAll()
-                        .requestMatchers("/api/v1/userlist").hasRole("GENERAL")
+                        .requestMatchers("/api/v1/userlist","/api/v1/chatroom").hasRole("GENERAL")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form.disable())
