@@ -24,7 +24,8 @@ function sendMessageToServer(roomId, sender, content) {
 }
 
 function renderMessage(chat) {
-  const currentUsername = localStorage.getItem("username");
+  console.log("현재 사용자:", localStorage.getItem("senderName"));
+  const currentUsername = localStorage.getItem("senderName");
   const msgDiv = document.createElement('div');
   msgDiv.textContent = chat.message;
 
@@ -42,5 +43,6 @@ function renderMessage(chat) {
 
   wrapper.appendChild(msgDiv);
   document.getElementById("chatMessages").appendChild(wrapper);
+  document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
 }
 

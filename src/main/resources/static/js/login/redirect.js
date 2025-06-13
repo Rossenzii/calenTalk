@@ -17,6 +17,7 @@ window.addEventListener("DOMContentLoaded", () => {
         alert("로그인 성공!");
         localStorage.setItem("accessToken", data.accessToken);
         localStorage.setItem("userId", data.userId);
+        localStorage.setItem("senderName", data.name);
         window.location.href = "/html/chat/chat.html";
       })
       .catch(err => {

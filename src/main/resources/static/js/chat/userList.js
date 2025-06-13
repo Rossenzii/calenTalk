@@ -74,7 +74,7 @@ function createChatRoom(fromUserId, toUserId, toUserName) {
     .then(data => {
       console.log(" 채팅방 생성됨:", data);
       localStorage.setItem("currentRoomId", data.roomId);
-      localStorage.setItem("username", data.fromUser);
+      localStorage.setItem("senderName", data.fromUser);
       connectWebSocket(data.roomId);
       // 여기서 WebSocket 연결하거나 메시지 로드 가능
     })

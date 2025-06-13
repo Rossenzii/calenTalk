@@ -73,13 +73,13 @@ jobs:
           docker login --username AWS --password-stdin ${{ secrets.ECR_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com
 
 
-      - name: Build, tag, and push docker image to Amazon ECR Public
+      - name: Build, tag, and push docker image to Amazon ECR
         run: |
           IMAGE_TAG=$(date +%Y%m%d%H%M%S)
           docker build -t ${{ secrets.ECR_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/${{ secrets.ECR_PRIVATE_REPOSITORY }}:$IMAGE_TAG .
           docker push ${{ secrets.ECR_ID }}.dkr.ecr.ap-northeast-2.amazonaws.com/${{ secrets.ECR_PRIVATE_REPOSITORY }}:$IMAGE_TAG
 
-      - name: Setup SSH agent
+      - name: Setup SSH agentㅊ
         uses: webfactory/ssh-agent@v0.5.4
         with:
           ssh-private-key: ${{ secrets.EC2_PRIVATE_KEY }}
