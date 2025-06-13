@@ -1,16 +1,32 @@
 let stompClient = null;
+let subscription = null;
+let isConnected = false;
 
 function connectWebSocket(roomId) {
-  const socket = new SockJS("/stomp");
-  stompClient = Stomp.over(socket);
+  if (!stompClient || !isConnected) {
+    const socket = new SockJS("/stomp");
+    stompClient = Stomp.over(socket);
 
-  stompClient.connect({}, function () {
-    console.log("WebSocket 연결됨");
-    // 메시지 구독
-    stompClient.subscribe("/sub/chat/room" + roomId, function (message) {
-      const chat = JSON.parse(message.body);
-    renderMessage(chat);
+    stompClient.connect({}, function () {
+      console.log("WebSocket 연결됨");
+      isConnected = true;
+
+      subscribeToRoom(roomId);
     });
+  } else {
+    // 이미 연결되어 있으면 구독만 바꿔줌
+    subscribeToRoom(roomId);
+  }
+}
+
+function subscribeToRoom(roomId) {
+  if (subscription) {
+    subscription.unsubscribe();
+  }
+
+  subscription = stompClient.subscribe("/sub/chat/room" + roomId, function (message) {
+    const chat = JSON.parse(message.body);
+    renderMessage(chat);
   });
 }
 
