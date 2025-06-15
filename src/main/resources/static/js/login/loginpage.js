@@ -2,7 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const button = document.getElementById("google-login-btn");
   const GOOGLE_CLIENT_ID = "179393727431-qppqju1suj1l62dvprccfs18mhnds1sk.apps.googleusercontent.com";
   const REDIRECT_URI = "http://localhost:8081/html/login/redirect.html";
-  const SCOPE = "email profile";
+  const SCOPE = "email profile https://www.googleapis.com/auth/calendar";
+
 
   button.addEventListener("click", () => {
     const url =
@@ -10,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
       `?client_id=${GOOGLE_CLIENT_ID}` +
       `&redirect_uri=${REDIRECT_URI}` +
       `&response_type=code` +
-      `&scope=${SCOPE}` +
+      `&scope=${encodeURIComponent(SCOPE)}` +
       `&access_type=offline&prompt=consent`;
     window.location.href = url;
   });
