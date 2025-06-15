@@ -1,0 +1,41 @@
+#calendar {
+  background-color: white;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 11px;
+  margin-top: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+#calendar .fc {
+  font-size: 11px;
+}
+
+#calendar .fc-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+#calendar .fc-toolbar-title {
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+#calendar .fc-button {
+  padding: 2px 6px;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  background-color: #66bb6a;
+  border: none;
+  color: white;
+  transition: background-color 0.2s ease;
+}
+
+#calendar .fc-button:hover {
+  background-color: #43a047;
+}

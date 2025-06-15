@@ -62,3 +62,21 @@ function renderMessage(chat) {
   document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+  const calendarEl = document.getElementById('calendar');
+  if (calendarEl) {
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      height: 'auto',
+      contentHeight: 'auto',
+      aspectRatio: 0.85,
+      headerToolbar: {
+        left: 'prev,next',
+        center: 'title',
+        right: 'today'
+      },
+      events: [] // 일정 아직 없음
+    });
+    calendar.render();
+  }
+});

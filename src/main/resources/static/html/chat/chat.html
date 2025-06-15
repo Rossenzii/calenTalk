@@ -1,31 +1,40 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>calenTalk 채팅</title>
-    <link rel="stylesheet" href="/css/chat/chat.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/chat/chat.css" />
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
+
+    <!-- 라이브러리 -->
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
-    <!-- defer 추가 -->
+    <!-- JS -->
     <script src="/js/chat/messageHandler.js" defer></script>
     <script src="/js/chat/userList.js" defer></script>
     <script src="/js/chat/chat.js" defer></script>
 </head>
+
 <body>
 <div class="sidebar">
     <div class="logo">calenTalk</div>
     <ul class="user-list" id="userList">
         <!-- 사용자 목록이 JS로 채워짐 -->
     </ul>
+    <!-- 캘린더 영역 -->
+    <div id="calendar" style="margin-top: 30px;"></div>
 </div>
 
 <div class="chat-area">
     <div class="chat-header" id="chatHeader">채팅방</div>
     <div class="chat-messages" id="chatMessages"></div>
     <div class="chat-input">
-        <input type="text" id="chatInput" placeholder="메시지를 입력하세요...">
+        <input type="text" id="chatInput" placeholder="메시지를 입력하세요..." />
         <button id="sendButton">보내기</button>
     </div>
 </div>
